@@ -29,10 +29,16 @@ class SaleLine:
         if self.product:
             self.supply_sale = self.product.supply_on_sale
 
+    @property
     def supply_on_sale(self):
-        if self.supply_sale:
-            return self.supply_sale
-        return super(SaleLine, self).supply_on_sale()
+        # Overwrite supply_on_sale from sale_supply without super
+        if (self.type != 'line'
+                or not self.product
+                or self.quantity <= 0
+                or not self.product.purchasable
+                or any(m.state not in ['staging', 'cancel'] for m in self.moves)):
+            return False
+        return self.supply_sale
 
     def get_purchase_request(self):
         request = super(SaleLine, self).get_purchase_request()
