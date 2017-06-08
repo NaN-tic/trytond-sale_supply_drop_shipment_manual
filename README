@@ -1,0 +1,20 @@
+nantic_sale_supply_drop_shipment_manual
+=======================================
+
+The sale_supply_drop_shipment_manual module of the Tryton application platform.
+
+Installing
+----------
+
+See INSTALL
+
+
+License
+-------
+
+See LICENSE
+
+Copyright
+---------
+
+See COPYRIGHT
