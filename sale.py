@@ -42,8 +42,10 @@ class SaleLine:
 
     def get_purchase_request(self):
         request = super(SaleLine, self).get_purchase_request()
-        if request and request.party and self.product \
-                and self.product.type in ('goods', 'assets') and self.drop_shipment:
+        if (request
+                and self.product
+                and self.product.type in ('goods', 'assets')
+                and self.drop_shipment):
            request.customer = self.sale.party
            request.delivery_address = self.sale.shipment_address
         return request
