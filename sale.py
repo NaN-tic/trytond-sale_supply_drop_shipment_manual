@@ -12,15 +12,13 @@ class SaleLine:
     __name__ = 'sale.line'
     supply_sale = fields.Boolean('Supply On Sale',
         states={
-                # TODO invisible product type are not goods or assets
-                'invisible': Eval('type') != 'line',
-            },
-        depends=['type', 'product'])
+            # TODO invisible product type are not goods or assets
+            'invisible': Eval('type') != 'line',
+        }, depends=['type', 'product'])
     drop_shipment = fields.Boolean('Drop Shipment',
         states={
-                'invisible': ~Eval('supply_sale') | (Eval('type') != 'line'),
-            },
-        depends=['supply_sale', 'type'])
+            'invisible': ~Eval('supply_sale') | (Eval('type') != 'line'),
+        }, depends=['supply_sale', 'type'])
 
     def on_change_product(self):
         super(SaleLine, self).on_change_product()

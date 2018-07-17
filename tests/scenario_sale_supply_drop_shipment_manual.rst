@@ -8,6 +8,7 @@ Imports::
     >>> from dateutil.relativedelta import relativedelta
     >>> from decimal import Decimal
     >>> from proteus import config, Model, Wizard
+    >>> from trytond.tests.tools import activate_modules
     >>> from trytond.modules.company.tests.tools import create_company, \
     ...     get_company
     >>> from trytond.modules.account.tests.tools import create_fiscalyear, \
@@ -16,35 +17,20 @@ Imports::
     ...     set_fiscalyear_invoice_sequences, create_payment_term
     >>> today = datetime.date.today()
 
-Create database::
-
-    >>> config = config.set_trytond()
-    >>> config.pool.test = True
-
 Install sale_supply, sale, purchase::
 
-    >>> Module = Model.get('ir.module')
-    >>> modules = Module.find([
-    ...         ('name', 'in', ('sale_supply_drop_shipment_manual', 'sale',
-    ...             'purchase')),
-    ...         ])
-    >>> for module in modules:
-    ...     module.click('install')
-    >>> Wizard('ir.module.install_upgrade').execute('upgrade')
+    >>> config = activate_modules(['sale_supply_drop_shipment_manual', 'sale',
+    ...             'purchase'])
 
 Create company::
 
     >>> _ = create_company()
     >>> company = get_company()
 
-Reload the context::
+Create sale user::
 
     >>> User = Model.get('res.user')
     >>> Group = Model.get('res.group')
-    >>> config._context = User.get_preferences(True, config.context)
-
-Create sale user::
-
     >>> sale_user = User()
     >>> sale_user.name = 'Sale'
     >>> sale_user.login = 'sale'
@@ -108,7 +94,6 @@ Create product::
     >>> unit, = ProductUom.find([('name', '=', 'Unit')])
     >>> ProductTemplate = Model.get('product.template')
     >>> Product = Model.get('product.product')
-    >>> product = Product()
     >>> template = ProductTemplate()
     >>> template.name = 'product'
     >>> template.default_uom = unit
@@ -121,8 +106,7 @@ Create product::
     >>> template.account_revenue = revenue
     >>> template.supply_on_sale = True
     >>> template.save()
-    >>> product.template = template
-    >>> product.save()
+    >>> product, = template.products
     >>> product_supplier = ProductSupplier()
     >>> product_supplier.product = template
     >>> product_supplier.party = supplier
