@@ -12,7 +12,7 @@ Imports::
     >>> from trytond.modules.company.tests.tools import create_company, \
     ...     get_company
     >>> from trytond.modules.account.tests.tools import create_fiscalyear, \
-    ...     create_chart, get_accounts
+    ...     create_chart, get_accounts, create_tax
     >>> from trytond.modules.account_invoice.tests.tools import \
     ...     set_fiscalyear_invoice_sequences, create_payment_term
     >>> today = datetime.date.today()
@@ -87,6 +87,24 @@ Create parties::
     >>> customer = Party(name='Customer')
     >>> customer.save()
 
+Create tax::
+
+    >>> tax = create_tax(Decimal('.10'))
+    >>> tax.save()
+
+Create account categories::
+
+    >>> ProductCategory = Model.get('product.category')
+    >>> account_category = ProductCategory(name="Account Category")
+    >>> account_category.accounting = True
+    >>> account_category.account_expense = expense
+    >>> account_category.account_revenue = revenue
+    >>> account_category.save()
+
+    >>> account_category_tax, = account_category.duplicate()
+    >>> account_category_tax.customer_taxes.append(tax)
+    >>> account_category_tax.save()
+
 Create product::
 
     >>> ProductUom = Model.get('product.uom')
@@ -102,8 +120,7 @@ Create product::
     >>> template.salable = True
     >>> template.list_price = Decimal('10')
     >>> template.cost_price = Decimal('5')
-    >>> template.account_expense = expense
-    >>> template.account_revenue = revenue
+    >>> template.account_category = account_category_tax
     >>> template.supply_on_sale = True
     >>> template.save()
     >>> product, = template.products
@@ -135,7 +152,7 @@ Sale 250 products::
     >>> sale.click('confirm')
     >>> sale.click('process')
     >>> sale.state
-    u'processing'
+    'processing'
     >>> len(sale.shipments)
     1
 
@@ -152,7 +169,7 @@ Sale 50 products and drop shipment::
     >>> sale.click('confirm')
     >>> sale.click('process')
     >>> sale.state
-    u'processing'
+    'processing'
     >>> sale.shipments
     []
     >>> sale.drop_shipments
@@ -180,7 +197,7 @@ Create a Purchase from Purchase Request::
     >>> purchase.click('confirm')
     >>> purchase.click('process')
     >>> purchase.state
-    u'processing'
+    'processing'
 
 Check sale drop shipment::
 
