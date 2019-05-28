@@ -150,7 +150,6 @@ Sale 250 products::
     >>> sale_line.quantity = 250
     >>> sale.click('quote')
     >>> sale.click('confirm')
-    >>> sale.click('process')
     >>> sale.state
     'processing'
     >>> len(sale.shipments)
@@ -167,7 +166,6 @@ Sale 50 products and drop shipment::
     >>> sale_line.drop_shipment = True
     >>> sale.click('quote')
     >>> sale.click('confirm')
-    >>> sale.click('process')
     >>> sale.state
     'processing'
     >>> sale.shipments
@@ -195,7 +193,6 @@ Create a Purchase from Purchase Request::
     >>> purchase.payment_term = payment_term
     >>> purchase.click('quote')
     >>> purchase.click('confirm')
-    >>> purchase.click('process')
     >>> purchase.state
     'processing'
 
