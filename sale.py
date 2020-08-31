@@ -33,7 +33,7 @@ class SaleLine(metaclass=PoolMeta):
                 or not self.product
                 or self.quantity <= 0
                 or not self.product.purchasable
-                or any(m.state not in ['staging', 'cancel'] for m in self.moves)):
+                or any(m.state not in ['staging', 'cancelled'] for m in self.moves)):
             return False
         return self.supply_sale
 
